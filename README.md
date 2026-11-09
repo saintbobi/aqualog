@@ -48,6 +48,15 @@ Open http://localhost:8000.
 
 Optional tools (Adminer): `docker compose --profile tools up -d` → http://localhost:8080
 
+## Docker Hub
+
+Image published at [docker.io/saintbobi705/aqualog](https://hub.docker.com/r/saintbobi705/aqualog):
+
+```bash
+docker pull saintbobi705/aqualog:1.0.0
+docker pull saintbobi705/aqualog:latest
+```
+
 ## Screenshots
 
 TODO — after build: `docker compose ps`, curl tests, persistence test.
