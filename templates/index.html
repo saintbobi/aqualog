@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section id="tanks">
+  <h2>Tanks</h2>
+  <form id="tank-form">
+    <input name="name" placeholder="Tank name" required maxlength="100">
+    <select name="water_type">
+      <option value="freshwater">Freshwater</option>
+      <option value="planted">Planted</option>
+      <option value="shrimp">Shrimp</option>
+    </select>
+    <button type="submit">Add tank</button>
+  </form>
+  <ul id="tank-list">
+    {% for t in tanks %}
+    <li data-id="{{ t.id }}">
+      <a href="/?tank={{ t.id }}">{{ t.name }}</a>
+      <span class="badge">{{ t.water_type }}</span>
+    </li>
+    {% else %}
+    <li class="empty">No tanks yet — add one above.</li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section id="readings" hidden>
+  <h2 id="reading-title"></h2>
+  <form id="reading-form">
+    <input type="number" step="0.01" min="0" max="14"   name="ph"            placeholder="pH">
+    <input type="number" step="0.01" min="-10" max="60" name="temperature_c" placeholder="Temp °C">
+    <input type="number" step="0.001" name="nh3_ppm"    placeholder="NH3 ppm">
+    <input type="number" step="0.001" name="no2_ppm"    placeholder="NO2 ppm">
+    <input type="number" step="0.001" name="no3_ppm"    placeholder="NO3 ppm">
+    <button type="submit">Log reading</button>
+  </form>
+
+  <canvas id="trend-chart" height="120"></canvas>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Measured at</th><th>pH</th><th>Temp °C</th>
+        <th>NH3</th><th>NO2</th><th>NO3</th>
+      </tr>
+    </thead>
+    <tbody id="reading-rows"></tbody>
+  </table>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="/static/app.js"></script>
+{% endblock %}
