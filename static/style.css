@@ -67,3 +67,26 @@ th { color: var(--muted); font-size: 0.85rem; text-transform: uppercase; }
 canvas { margin-top: 1.5rem; background: var(--bg); border-radius: 6px; padding: 0.5rem; }
 
 .flash { color: var(--ok); margin-top: 0.5rem; }
+
+/* assessment status */
+.status-badge, .banner {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.status-badge.safe, .banner.safe   { background: #34d399; color: #052e16; }
+.status-badge.warning, .banner.warning { background: #fbbf24; color: #451a03; }
+.status-badge.danger, .banner.danger   { background: #f87171; color: #450a0a; }
+.status-badge.unknown, .banner.unknown { background: #94a3b8; color: #1e293b; }
+
+.banner {
+  display: block;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}

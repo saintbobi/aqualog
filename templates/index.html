@@ -26,6 +26,7 @@
 
 <section id="readings" hidden>
   <h2 id="reading-title"></h2>
+  <div id="status-banner" hidden></div>
   <form id="reading-form">
     <input type="number" step="0.01" min="0" max="14"   name="ph"            placeholder="pH">
     <input type="number" step="0.01" min="-10" max="60" name="temperature_c" placeholder="Temp °C">
@@ -41,7 +42,7 @@
     <thead>
       <tr>
         <th>Measured at</th><th>pH</th><th>Temp °C</th>
-        <th>NH3</th><th>NO2</th><th>NO3</th>
+        <th>NH3</th><th>NO2</th><th>NO3</th><th>Status</th>
       </tr>
     </thead>
     <tbody id="reading-rows"></tbody>

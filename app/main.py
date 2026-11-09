@@ -9,6 +9,7 @@ from fastapi.templating import Jinja2Templates
 
 from .cache import CACHE_TTL_SECONDS, get_redis
 from .database import get_conn, init_db
+from .rules import evaluate
 from .schemas import ReadingCreate, TankCreate
 
 
@@ -77,10 +78,11 @@ def list_readings(tank_id: int):
 
     with _db() as conn:
         tank = conn.execute(
-            "SELECT id FROM tanks WHERE id = %s", (tank_id,)
+            "SELECT id, water_type FROM tanks WHERE id = %s", (tank_id,)
         ).fetchone()
         if tank is None:
             raise HTTPException(status_code=404, detail="tank not found")
+        water_type = tank[1]
         rows = conn.execute(
             """SELECT id, tank_id, ph, temperature_c, nh3_ppm, no2_ppm, no3_ppm, measured_at
                FROM readings WHERE tank_id = %s ORDER BY measured_at DESC""",
@@ -97,6 +99,16 @@ def list_readings(tank_id: int):
             "no2_ppm": float(r[5]) if r[5] is not None else None,
             "no3_ppm": float(r[6]) if r[6] is not None else None,
             "measured_at": r[7].isoformat(),
+            "assessment": evaluate(
+                {
+                    "ph": r[2],
+                    "temperature_c": r[3],
+                    "nh3_ppm": r[4],
+                    "no2_ppm": r[5],
+                    "no3_ppm": r[6],
+                },
+                water_type,
+            ),
         }
         for r in rows
     ]
@@ -110,10 +122,11 @@ def list_readings(tank_id: int):
 def create_reading(payload: ReadingCreate):
     with _db() as conn:
         tank = conn.execute(
-            "SELECT id FROM tanks WHERE id = %s", (payload.tank_id,)
+            "SELECT id, water_type FROM tanks WHERE id = %s", (payload.tank_id,)
         ).fetchone()
         if tank is None:
             raise HTTPException(status_code=404, detail="tank not found")
+        water_type = tank[1]
         row = conn.execute(
             """INSERT INTO readings (tank_id, ph, temperature_c, nh3_ppm, no2_ppm, no3_ppm, measured_at)
                VALUES (%s, %s, %s, %s, %s, %s, COALESCE(%s, now()))
@@ -143,6 +156,16 @@ def create_reading(payload: ReadingCreate):
         "no2_ppm": payload.no2_ppm,
         "no3_ppm": payload.no3_ppm,
         "measured_at": row[1].isoformat(),
+        "assessment": evaluate(
+            {
+                "ph": payload.ph,
+                "temperature_c": payload.temperature_c,
+                "nh3_ppm": payload.nh3_ppm,
+                "no2_ppm": payload.no2_ppm,
+                "no3_ppm": payload.no3_ppm,
+            },
+            water_type,
+        ),
     }
 
 

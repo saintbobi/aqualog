@@ -40,7 +40,7 @@ async function loadReadings() {
   const rows = $("#reading-rows");
   rows.innerHTML = "";
   if (readings.length === 0) {
-    rows.innerHTML = '<tr><td colspan="6" class="empty">No readings yet.</td></tr>';
+    rows.innerHTML = '<tr><td colspan="7" class="empty">No readings yet.</td></tr>';
   }
   for (const r of [...readings].reverse()) {
     const tr = document.createElement("tr");
@@ -53,9 +53,34 @@ async function loadReadings() {
       td.textContent = c === null || c === undefined ? "—" : c;
       tr.append(td);
     }
+    if (r.assessment) {
+      const td = document.createElement("td");
+      const badge = document.createElement("span");
+      badge.className = `status-badge ${r.assessment.status}`;
+      badge.textContent = r.assessment.status;
+      td.append(badge);
+      tr.append(td);
+    }
     rows.append(tr);
   }
   drawChart(readings);
+  drawBanner(readings);
+}
+
+function drawBanner(readings) {
+  const banner = $("#status-banner");
+  const latest = readings[0]; // list is DESC — first is most recent
+  if (!latest || !latest.assessment) {
+    banner.hidden = true;
+    return;
+  }
+  const a = latest.assessment;
+  const label = a.status === "safe" ? "SAFE" :
+                a.status === "warning" ? "WARNING" :
+                a.status === "danger" ? "DANGER" : "NO DATA";
+  banner.className = `banner ${a.status}`;
+  banner.hidden = false;
+  banner.innerHTML = `<strong>${label}</strong> — ${a.message}`;
 }
 
 function drawChart(readings) {
