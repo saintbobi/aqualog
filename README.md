@@ -38,8 +38,8 @@ browser ──► app (FastAPI + Jinja2, port 8000)
 ## Run
 
 ```bash
-git clone https://github.com/<your-username>/aquarium-parameter-log.git
-cd aquarium-parameter-log
+git clone https://github.com/saintbobi/aqualog.git
+cd aqualog
 cp .env.example .env
 docker compose up -d --build
 ```
